@@ -30,7 +30,7 @@ uint8_t buf, timeBuf[8];
 
 time_t getTime() {
     time_t timeNow;
-    uint64_t delta = millis() - whenSet;
+    uint64_t delta = esp_timer_get_time() / 1000 - whenSet;
 
     timeNow = set + (delta - delta % 1000) / 1000;
 
@@ -46,7 +46,7 @@ time_t getNtpTime() {
     }
 
     timeClient.update();
-    whenUpdated = millis();
+    whenUpdated = esp_timer_get_time() / 1000;
 
     WiFi.disconnect();
 
