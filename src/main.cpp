@@ -50,6 +50,8 @@ time_t getNtpTime() {
 
     WiFi.disconnect();
 
+    Serial.println("Got time from NTP server");
+
     return timeClient.getEpochTime();
 }
 
