@@ -25,10 +25,10 @@ void setup() {
 }
 
 
-uint64_t whenUpdated = 0, whenSet = 0, set = 0;
+uint64_t whenSet = 0, set = 0;
 uint8_t buf, timeBuf[8];
 
-time_t getTime() {
+uint64_t getTime() {
     time_t timeNow;
     uint64_t delta = esp_timer_get_time() / 1000 - whenSet;
 
@@ -37,7 +37,7 @@ time_t getTime() {
     return timeNow;
 }
 
-time_t getNtpTime() {
+void setToNtpTime() {
     WiFi.begin(ssid, password);
 
     while ( WiFi.status() != WL_CONNECTED ) {
@@ -46,13 +46,12 @@ time_t getNtpTime() {
     }
 
     timeClient.update();
-    whenUpdated = esp_timer_get_time() / 1000;
+    set = timeClient.getEpochTime();
+    whenSet = esp_timer_get_time() / 1000;
 
     WiFi.disconnect();
 
     Serial.println("Got time from NTP server");
-
-    return timeClient.getEpochTime();
 }
 
 void clearBuf() {
@@ -71,8 +70,7 @@ void loop() {
             Serial.println(getTime());
         }
         else if (buf == 0x01) {
-            set = getNtpTime();
-            whenSet = whenUpdated;
+            setToNtpTime();
         }
         else buf = 0xFF;
     }
