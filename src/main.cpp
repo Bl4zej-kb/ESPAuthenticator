@@ -116,4 +116,6 @@ void loop() {
         }
         else buf = 0xFF;
     }
+
+    delay(10);
 }
